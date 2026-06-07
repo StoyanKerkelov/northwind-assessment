@@ -101,3 +101,20 @@ dotnet test
 * Additional validation and error handling
 * Centralized exception handling middleware
 * Request validation
+
+## AI Assistance
+
+AI tools (ChatGPT) were used during development for:
+
+* SQL query refinement
+* Documentation and README review
+* Code review
+* Identifying and resolving floating-point precision issues by casting order totals to DECIMAL in SQL
+* The final implementation, testing, debugging, and integration of all code were performed manually.
+
+### Example prompts
+
+* "Create a Dapper query that returns customers with their order count."
+* "Why am I getting floating-point precision issues in my order total calculations?"
+* "Provide example xUnit tests for an ASP.NET Core controller using Moq."
+* "Review this README and suggest improvements."
