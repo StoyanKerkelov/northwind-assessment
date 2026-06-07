@@ -2,9 +2,14 @@
 
 ## Overview
 
-A .NET 8 Web API solution built against the Northwind sample database.
+This project implements a simple ASP.NET Core Web API against the Northwind sample database.
 
-The application provides customer overview and customer order history endpoints for internal staff usage.
+The API allows staff members to:
+
+* View customers and their order counts
+* Search customers by name
+* View customer details and order history
+* Review order totals and product counts
 
 ## Technology Stack
 
@@ -14,35 +19,34 @@ The application provides customer overview and customer order history endpoints 
 * SQL Server LocalDB
 * Swagger / OpenAPI
 * xUnit
+* FluentAssertions
+* Moq
 
-## Features
+## Project Structure
 
-### Customer Overview
+### Northwind.Api
 
-Returns a list of customers together with the number of orders they have placed.
+ASP.NET Core Web API project containing controllers and application configuration.
 
-Supports filtering by customer name.
+### Northwind.Infrastructure
 
-Endpoint:
+Data access layer containing repositories, DTOs and SQL queries.
+
+### Northwind.Tests
+
+Unit and integration tests.
+
+## API Endpoints
+
+### Get Customers
 
 GET /api/customers
 
-Example:
+Optional search parameter:
 
 GET /api/customers?search=alf
 
-### Customer Details
-
-Returns customer information and a summary of the customer's order history.
-
-For each order the API returns:
-
-* Order Id
-* Order Date
-* Total Order Value
-* Number of Products
-
-Endpoint:
+### Get Customer Details
 
 GET /api/customers/{id}
 
@@ -50,19 +54,50 @@ Example:
 
 GET /api/customers/ALFKI
 
-## Project Structure
+Returns customer information together with order history summary.
 
-* Northwind.Api - ASP.NET Core Web API
-* Northwind.Infrastructure - Data access and repository layer
-* Northwind.Tests - Unit tests
+## Running the Application
 
-## Notes
+### Prerequisites
 
-This solution uses Dapper for lightweight data access and SQL Server LocalDB with the Northwind sample database.
+* .NET 8 SDK
+* SQL Server LocalDB
+* Northwind sample database
+
+### Run
+
+1. Restore NuGet packages
+2. Ensure the Northwind database exists in LocalDB
+3. Run the Northwind.Api project
+4. Open Swagger UI at /swagger
+
+## Testing
+
+Run:
+
+dotnet test
+
+* Repository integration tests require a local Northwind database.
+* Controller tests are implemented as unit tests using Moq.
+
+## Assumptions and Trade-offs
+
+* The number of products in an order is calculated as the number of distinct products included in the order.
+* SQL Server LocalDB was chosen to keep local setup simple.
+* Repository methods return DTOs directly to keep the solution lightweight and focused on the assessment requirements.
+
+## Design Decisions
+
+* Dapper was selected instead of Entity Framework Core because the solution requires a small number of read-only queries and benefits from explicit SQL control.
+* A repository abstraction was used to isolate data access concerns.
+* Swagger is enabled for easy API exploration and testing.
 
 ## Future Improvements
 
-* Additional automated tests
-* Paging for customer lists
+* Pagination for customer lists
 * Structured logging
-* Integration tests
+* Integration test database isolation
+* API versioning
+* Additional validation and error handling
+* Centralized exception handling middleware
+* Request validation
