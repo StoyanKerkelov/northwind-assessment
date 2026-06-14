@@ -64,6 +64,12 @@ Returns customer information together with order history summary.
 * SQL Server LocalDB
 * Northwind sample database
 
+## Database Setup
+
+1. Install SQL Server LocalDB
+2. Create database `Northwind`
+3. Execute scripts from `/scripts`
+
 ### Run
 
 1. Restore NuGet packages
