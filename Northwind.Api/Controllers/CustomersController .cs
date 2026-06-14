@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using NorthwindNorthwind.Application.Interfaces;
+using Northwind.Application.Interfaces;
 
 namespace Northwind.Api.Controllers
 {
@@ -10,17 +10,18 @@ namespace Northwind.Api.Controllers
     [Route("api/customers")]
     public class CustomersController : ControllerBase
     {
-        private readonly ICustomerRepository _repository;
+        private readonly ICustomerService _service;
 
         /// <summary>
         /// Initializes a new instance of the CustomersController.
         /// </summary>
-        /// <param name="repository">
-        /// Customer repository.
+        /// <param name="service">
+        /// ICustomerService service.
         /// </param>
-        public CustomersController(ICustomerRepository repository)
+
+        public CustomersController(ICustomerService service)
         {
-            _repository = repository;
+            _service = service;
         }
 
         /// <summary>
@@ -35,7 +36,7 @@ namespace Northwind.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCustomers([FromQuery] string? search, CancellationToken cancellationToken)
         {
-            var customers = await _repository.GetCustomersAsync(search, cancellationToken);
+            var customers = await _service.GetCustomersAsync(search, cancellationToken);
 
             return Ok(customers);
         }
@@ -52,7 +53,7 @@ namespace Northwind.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCustomer(string id, CancellationToken cancellationToken)
         {
-            var customer = await _repository.GetCustomerByIdAsync(id, cancellationToken);
+            var customer = await _service.GetCustomerByIdAsync(id, cancellationToken);
 
             if (customer is null)
                 return NotFound();

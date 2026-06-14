@@ -1,4 +1,6 @@
 using Northwind.Api.Middleware;
+using Northwind.Application.Interfaces;
+using Northwind.Application.Services;
 using Northwind.Infrastructure.Database;
 using Northwind.Infrastructure.Repositories;
 using NorthwindNorthwind.Application.Interfaces;
@@ -21,6 +23,8 @@ var connectionString = builder.Configuration.GetConnectionString("Northwind")
                         ?? throw new InvalidOperationException("Connection string 'Northwind' not found.");
 
 builder.Services.AddSingleton(new ConnectionFactory(connectionString));
+
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 
