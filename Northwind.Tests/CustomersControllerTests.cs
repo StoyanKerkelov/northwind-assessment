@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Northwind.Api.Controllers;
 using Northwind.Application.Dtos;
-using NorthwindNorthwind.Application.Interfaces;
+using Northwind.Application.Interfaces;
 
 namespace Northwind.Tests
 {
@@ -13,12 +13,12 @@ namespace Northwind.Tests
         public async Task GetCustomer_ShouldReturnNotFound_WhenCustomerDoesNotExist()
         {
             // Arrange
-            var repository = new Mock<ICustomerRepository>();
+            var service = new Mock<ICustomerService>();
 
-            repository.Setup(r => r.GetCustomerByIdAsync("INVALID", It.IsAny<CancellationToken>()))
+            service.Setup(r => r.GetCustomerByIdAsync("INVALID", It.IsAny<CancellationToken>()))
                                    .ReturnsAsync((CustomerDetailDto?)null);
 
-            var controller = new CustomersController(repository.Object);
+            var controller = new CustomersController(service.Object);
 
             // Act
             var result =  await controller.GetCustomer("INVALID", CancellationToken.None);
@@ -31,12 +31,12 @@ namespace Northwind.Tests
         public async Task GetCustomer_ShouldReturnOk_WhenCustomerExists()
         {
             // Arrange
-            var repository = new Mock<ICustomerRepository>();
+            var service = new Mock<ICustomerService>();
 
-            repository.Setup(r => r.GetCustomerByIdAsync("ALFKI", It.IsAny<CancellationToken>()))
+            service.Setup(r => r.GetCustomerByIdAsync("ALFKI", It.IsAny<CancellationToken>()))
                              .ReturnsAsync(new CustomerDetailDto { Id = "ALFKI", Name = "Alfreds Futterkiste" });
 
-            var controller = new CustomersController(repository.Object);
+            var controller = new CustomersController(service.Object);
 
             // Act
             var result = await controller.GetCustomer("ALFKI", CancellationToken.None);

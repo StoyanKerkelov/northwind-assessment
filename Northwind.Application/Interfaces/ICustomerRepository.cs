@@ -1,7 +1,7 @@
 ﻿
 using Northwind.Application.Dtos;
 
-namespace NorthwindNorthwind.Application.Interfaces
+namespace Northwind.Application.Interfaces
 {
 
     public interface ICustomerRepository

@@ -3,7 +3,6 @@ using Northwind.Application.Interfaces;
 using Northwind.Application.Services;
 using Northwind.Infrastructure.Database;
 using Northwind.Infrastructure.Repositories;
-using NorthwindNorthwind.Application.Interfaces;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);

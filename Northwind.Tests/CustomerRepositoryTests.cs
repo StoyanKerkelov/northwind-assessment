@@ -10,8 +10,7 @@ namespace Northwind.Tests
 
         public CustomerRepositoryTests()
         {
-            var connectionFactory = new ConnectionFactory(
-                @"Server=(localdb)\MSSQLLocalDB;Database=Northwind;Trusted_Connection=True;TrustServerCertificate=True;");
+            var connectionFactory = new ConnectionFactory(@"Server=localhost;Database=Northwind;Trusted_Connection=True;TrustServerCertificate=True;");
 
             _repository = new CustomerRepository(connectionFactory);
         }

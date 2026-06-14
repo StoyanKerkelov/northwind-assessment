@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Northwind.Application.Dtos;
 using Northwind.Application.Interfaces;
-using NorthwindNorthwind.Application.Interfaces;
 
 namespace Northwind.Application.Services
 {
@@ -9,6 +8,7 @@ namespace Northwind.Application.Services
     {
         private readonly ICustomerRepository _repository;
         private readonly ILogger<CustomerService> _logger;
+
         public CustomerService(ICustomerRepository repository, ILogger<CustomerService> logger)
         {
             _repository = repository;
