@@ -29,6 +29,8 @@ builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 
 builder.Services.AddHealthChecks();
 
+builder.Services.AddMemoryCache(); 
+
 //builder.Services.AddProblemDetails(); // Use ProblemDetails for RFC 7807 compliant error responses.
 
 var app = builder.Build();
