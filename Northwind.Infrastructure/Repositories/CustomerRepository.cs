@@ -1,6 +1,7 @@
 ﻿using Dapper;
+using Northwind.Application.Dtos;
 using Northwind.Infrastructure.Database;
-using Northwind.Infrastructure.Models;
+using NorthwindNorthwind.Application.Interfaces;
 
 namespace Northwind.Infrastructure.Repositories
 {

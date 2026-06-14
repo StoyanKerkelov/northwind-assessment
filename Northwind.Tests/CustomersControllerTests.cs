@@ -2,8 +2,8 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Northwind.Api.Controllers;
-using Northwind.Infrastructure.Models;
-using Northwind.Infrastructure.Repositories;
+using Northwind.Application.Dtos;
+using NorthwindNorthwind.Application.Interfaces;
 
 namespace Northwind.Tests
 {

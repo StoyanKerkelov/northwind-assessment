@@ -1,6 +1,7 @@
-﻿using Northwind.Infrastructure.Models;
+﻿
+using Northwind.Application.Dtos;
 
-namespace Northwind.Infrastructure.Repositories
+namespace NorthwindNorthwind.Application.Interfaces
 {
 
     public interface ICustomerRepository

@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Northwind.Infrastructure.Repositories;
+using NorthwindNorthwind.Application.Interfaces;
 
 namespace Northwind.Api.Controllers
 {
