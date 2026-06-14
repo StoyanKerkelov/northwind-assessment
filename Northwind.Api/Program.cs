@@ -1,5 +1,7 @@
+using Northwind.Api.Middleware;
 using Northwind.Infrastructure.Database;
 using Northwind.Infrastructure.Repositories;
+using NorthwindNorthwind.Application.Interfaces;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +24,10 @@ builder.Services.AddSingleton(new ConnectionFactory(connectionString));
 
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 
+builder.Services.AddHealthChecks();
+
+//builder.Services.AddProblemDetails(); // Use ProblemDetails for RFC 7807 compliant error responses.
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -33,7 +39,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+app.MapHealthChecks("/health");
 
 app.MapControllers();
 
