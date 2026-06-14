@@ -77,6 +77,12 @@ Returns customer information together with order history summary.
 3. Run the Northwind.Api project
 4. Open Swagger UI at /swagger
 
+## Logging
+
+*The application uses ASP.NET Core built-in ILogger abstractions.
+*In development, logs are written to the console and Visual Studio output.
+*The logging implementation can be extended with providers such as Serilog or Application Insights.
+
 ## Testing
 
 Run:

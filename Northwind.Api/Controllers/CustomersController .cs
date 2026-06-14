@@ -34,9 +34,9 @@ namespace Northwind.Api.Controllers
         /// Request cancellation token.
         /// </param>
         [HttpGet]
-        public async Task<IActionResult> GetCustomers([FromQuery] string? search, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetCustomers([FromQuery] string? search, [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
         {
-            var customers = await _service.GetCustomersAsync(search, cancellationToken);
+            var customers = await _service.GetCustomersAsync(search, page, pageSize, cancellationToken);
 
             return Ok(customers);
         }

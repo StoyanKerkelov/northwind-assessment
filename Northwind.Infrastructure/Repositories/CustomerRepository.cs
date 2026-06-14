@@ -1,7 +1,8 @@
 ﻿using Dapper;
 using Northwind.Application.Dtos;
-using Northwind.Infrastructure.Database;
 using Northwind.Application.Interfaces;
+using Northwind.Application.Models;
+using Northwind.Infrastructure.Database;
 
 namespace Northwind.Infrastructure.Repositories
 {
@@ -11,57 +12,66 @@ namespace Northwind.Infrastructure.Repositories
         private readonly ConnectionFactory _connectionFactory;
 
         #region-sql
+        private const string customersCountSql = """
+                                                SELECT COUNT(*)
+                                                FROM Customers c
+                                                WHERE @Search IS NULL
+                                                OR c.CompanyName LIKE '%' + @Search + '%'
+                                                """;
+
         private const string customersSql = """
-                                    SELECT
-                                        c.CustomerID AS Id,
-                                        c.CompanyName AS Name,
-                                        COUNT(o.OrderID) AS OrderCount
-                                    FROM Customers c
-                                    LEFT JOIN Orders o
-                                        ON c.CustomerID = o.CustomerID
-                                    WHERE
-                                        @Search IS NULL
-                                        OR c.CompanyName LIKE '%' + @Search + '%'
-                                    GROUP BY
-                                        c.CustomerID,
-                                        c.CompanyName
-                                    ORDER BY
-                                        c.CompanyName
-                                    """;
+                                            SELECT
+                                                c.CustomerID AS Id,
+                                                c.CompanyName AS Name,
+                                                COUNT(o.OrderID) AS OrderCount
+                                            FROM Customers c
+                                            LEFT JOIN Orders o
+                                                ON c.CustomerID = o.CustomerID
+                                            WHERE
+                                                @Search IS NULL
+                                                OR c.CompanyName LIKE '%' + @Search + '%'
+                                            GROUP BY
+                                                c.CustomerID,
+                                                c.CompanyName
+                                            ORDER BY
+                                                c.CompanyName
+                                            OFFSET @Offset ROWS
+                                            FETCH NEXT @PageSize ROWS ONLY
+                                            """;
 
 
         private const string customerSql = """
-                                    SELECT
-                                        CustomerID AS Id,
-                                        CompanyName AS Name,
-                                        ContactName,
-                                        Country
-                                    FROM Customers
-                                    WHERE CustomerID = @CustomerId
-                                    """;
+                                            SELECT
+                                                CustomerID AS Id,
+                                                CompanyName AS Name,
+                                                ContactName,
+                                                Country
+                                            FROM Customers
+                                            WHERE CustomerID = @CustomerId
+                                            """;
 
         private const string ordersSql = """
-                                SELECT
-                                    o.OrderID AS OrderId,
-                                    o.OrderDate,
+                                        SELECT
+                                            o.OrderID AS OrderId,
+                                            o.OrderDate,
 
-                                CAST(SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS DECIMAL(18,2)) AS TotalValue,
+                                        CAST(SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS DECIMAL(18,2)) AS TotalValue,
 
-                                COUNT(DISTINCT od.ProductID) AS ProductCount
+                                        COUNT(DISTINCT od.ProductID) AS ProductCount
 
-                                FROM Orders o
-                                INNER JOIN [Order Details] od
-                                    ON o.OrderID = od.OrderID
+                                        FROM Orders o
+                                        INNER JOIN [Order Details] od
+                                            ON o.OrderID = od.OrderID
 
-                                WHERE o.CustomerID = @CustomerId
+                                        WHERE o.CustomerID = @CustomerId
 
-                                GROUP BY
-                                    o.OrderID,
-                                    o.OrderDate
+                                        GROUP BY
+                                            o.OrderID,
+                                            o.OrderDate
 
-                                ORDER BY
-                                    o.OrderDate DESC
-                                """;
+                                        ORDER BY
+                                            o.OrderDate DESC
+                                        """;
         #endregion-sql
 
         public CustomerRepository(ConnectionFactory connectionFactory)
@@ -85,11 +95,28 @@ namespace Northwind.Infrastructure.Repositories
             return customer;
         }
 
-        public async Task<IEnumerable<CustomerSummaryDto>> GetCustomersAsync(string? search, CancellationToken cancellationToken)
+        public async Task<PagedResult<CustomerSummaryDto>> GetCustomersAsync(string? search, int page, int pageSize, CancellationToken cancellationToken)
         {
             using var connection = _connectionFactory.CreateConnection();
 
-            return await connection.QueryAsync<CustomerSummaryDto>(customersSql, new { Search = search });
+            var totalCount = await connection.ExecuteScalarAsync<int>(customersCountSql, new { Search = search });
+
+            var customers = await connection.QueryAsync<CustomerSummaryDto>(
+                customersSql,
+                new
+                {
+                    Search = search,
+                    Offset = (page - 1) * pageSize,
+                    PageSize = pageSize
+                });
+
+            return new PagedResult<CustomerSummaryDto>
+            {
+                Items = customers,
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalCount
+            };
         }
     }
 }

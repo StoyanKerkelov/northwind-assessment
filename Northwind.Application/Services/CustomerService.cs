@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Northwind.Application.Dtos;
 using Northwind.Application.Interfaces;
+using Northwind.Application.Models;
 
 namespace Northwind.Application.Services
 {
@@ -15,11 +16,15 @@ namespace Northwind.Application.Services
             _logger = logger;
         }
 
-        public async Task<IEnumerable<CustomerSummaryDto>> GetCustomersAsync(string? search, CancellationToken cancellationToken)
+        public async Task<PagedResult<CustomerSummaryDto>> GetCustomersAsync(string? search, int page, int pageSize, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Retrieving customers with search term {Search}", search);
 
-            return await _repository.GetCustomersAsync(search, cancellationToken);
+            page = Math.Max(page, 1);
+
+            pageSize = Math.Clamp(pageSize, 1, 100);
+
+            return await _repository.GetCustomersAsync(search, page, pageSize, cancellationToken);
         }
 
         public async Task<CustomerDetailDto?> GetCustomerByIdAsync(string customerId, CancellationToken cancellationToken)
