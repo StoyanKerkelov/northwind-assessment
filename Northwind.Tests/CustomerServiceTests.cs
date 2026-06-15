@@ -117,5 +117,25 @@ namespace Northwind.Tests
             // Assert
             repository.Verify(r => r.GetCustomersAsync(null, It.IsAny<int>(), 20, It.IsAny<CancellationToken>()), Times.Exactly(2));
         }
+
+        [Fact]
+        public async Task GetCustomerByIdAsync_ShouldReturnNull_WhenIdIsInvalid()
+        {
+            // Arrange
+            var repository = new Mock<ICustomerRepository>();
+            var logger = new Mock<ILogger<CustomerService>>();
+
+            var memoryCache = new MemoryCache(new MemoryCacheOptions());
+
+            repository.Setup(r => r.GetCustomersAsync(It.IsAny<string?>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                      .ReturnsAsync(new PagedResult<CustomerSummaryDto>());
+
+            var service = new CustomerService(repository.Object, logger.Object, memoryCache);
+
+            // Act
+            var result = await service.GetCustomerByIdAsync("ABC",  CancellationToken.None);
+
+            result.Should().BeNull();
+        }
     }
 }

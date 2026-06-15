@@ -40,5 +40,36 @@ namespace Northwind.Tests
             // Assert
             result.Should().BeNull();
         }
+
+        [Fact]
+        public async Task GetCustomersAsync_ShouldReturnRequestedPageSize()
+        {
+            // Act
+            var result = await _repository.GetCustomersAsync(null, 1, 20, CancellationToken.None);
+
+            // Assert
+            result.Items.Should().HaveCountLessThanOrEqualTo(20);
+            result.Page.Should().Be(1);
+            result.PageSize.Should().Be(20);
+        }
+
+        [Fact]
+        public async Task GetCustomersAsync_ShouldReturnDifferentPages()
+        {
+            var page1 = await _repository.GetCustomersAsync(null, 1, 20, CancellationToken.None);
+
+            var page2 = await _repository.GetCustomersAsync(null, 2,  20, CancellationToken.None);
+
+            page1.Items.Select(c => c.Id)
+                       .Should().NotIntersectWith(page2.Items.Select(c => c.Id));
+        }
+
+        [Fact]
+        public async Task GetCustomersAsync_ShouldFilterBySearch()
+        {
+            var result = await _repository.GetCustomersAsync("alf", 1, 20, CancellationToken.None);
+
+            result.Items.Should().ContainSingle(c => c.Id == "ALFKI");
+        }
     }
 }
