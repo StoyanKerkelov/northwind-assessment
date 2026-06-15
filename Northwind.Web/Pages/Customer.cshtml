@@ -1,0 +1,48 @@
+﻿@page "{id}"
+@model Northwind.Web.Pages.CustomerModel
+@{
+    <h1>@Model.Customer?.Name</h1>
+
+    <p>
+        <strong>Customer ID:</strong>
+        @Model.Customer?.Id
+    </p>
+
+    <p>
+        <strong>Contact:</strong>
+        @Model.Customer?.ContactName
+    </p>
+
+    <p>
+        <strong>Country:</strong>
+        @Model.Customer?.Country
+    </p>
+
+    <h2>Orders</h2>
+
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Products</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model.Customer?.Orders ?? [])
+            {
+                <tr>
+                    <td>@order.OrderId</td>
+                    <td>@order.OrderDate?.ToString("yyyy-MM-dd")</td>
+                    <td>@order.TotalValue</td>
+                    <td>@order.ProductCount</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <p>
+        <a asp-page="/Customers">← Back to customers</a>
+    </p>
+}

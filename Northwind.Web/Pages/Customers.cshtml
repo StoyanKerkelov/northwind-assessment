@@ -1,0 +1,39 @@
+﻿@page
+@using Northwind.Application.Dtos;
+@model Northwind.Web.Pages.CustomersModel
+@{
+    <h1>Customers</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Orders</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var customer in Model.Customers.Items)
+            {
+                <tr>
+                    <td>@customer.Id</td>
+                    <td>
+                        <a asp-page="/Customer"
+                           asp-route-id="@customer.Id">
+                            @customer.Name
+                        </a>
+                    </td>
+                    <td>@customer.OrderCount</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <p>
+        Page @Model.Customers.Page of @Model.Customers.TotalPages
+        (@Model.Customers.TotalCount customers)
+    </p>
+
+}
+
