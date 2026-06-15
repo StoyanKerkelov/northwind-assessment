@@ -1,6 +1,7 @@
 using Northwind.Api.Middleware;
 using Northwind.Application.DependencyInjection;
 using Northwind.Infrastructure.DependencyInjection;
+using OpenTelemetry.Metrics;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +23,15 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddHealthChecks();
 
-builder.Services.AddMemoryCache(); 
+builder.Services.AddMemoryCache();
+
+builder.Services.AddOpenTelemetry()
+    .WithMetrics(metrics =>
+    {
+        metrics.AddAspNetCoreInstrumentation();
+        metrics.AddRuntimeInstrumentation();
+        metrics.AddConsoleExporter();
+    });
 
 //builder.Services.AddProblemDetails(); // Use ProblemDetails for RFC 7807 compliant error responses.
 
