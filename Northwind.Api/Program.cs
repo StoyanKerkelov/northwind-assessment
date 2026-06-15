@@ -1,8 +1,6 @@
 using Northwind.Api.Middleware;
-using Northwind.Application.Interfaces;
-using Northwind.Application.Services;
-using Northwind.Infrastructure.Database;
-using Northwind.Infrastructure.Repositories;
+using Northwind.Application.DependencyInjection;
+using Northwind.Infrastructure.DependencyInjection;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,14 +16,9 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
-var connectionString = builder.Configuration.GetConnectionString("Northwind")
-                        ?? throw new InvalidOperationException("Connection string 'Northwind' not found.");
+builder.Services.AddApplication();
 
-builder.Services.AddSingleton(new ConnectionFactory(connectionString));
-
-builder.Services.AddScoped<ICustomerService, CustomerService>();
-
-builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddHealthChecks();
 

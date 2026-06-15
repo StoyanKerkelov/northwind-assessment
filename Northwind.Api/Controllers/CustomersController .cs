@@ -30,6 +30,12 @@ namespace Northwind.Api.Controllers
         /// <param name="search">
         /// Optional customer name filter.
         /// </param>
+        /// <param name="page">
+        /// Optional query page filter.
+        /// </param>
+        /// <param name="pageSize">
+        /// Optional query pageSize filter.
+        /// </param>
         /// <param name="cancellationToken">
         /// Request cancellation token.
         /// </param>
@@ -53,6 +59,12 @@ namespace Northwind.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCustomer(string id, CancellationToken cancellationToken)
         {
+
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest("Invalid id, customer id must be 5 characters.");
+            }
+
             var customer = await _service.GetCustomerByIdAsync(id, cancellationToken);
 
             if (customer is null)

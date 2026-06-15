@@ -53,6 +53,13 @@ namespace Northwind.Application.Services
         {
             _logger.LogInformation("Retrieving customer {CustomerId}", customerId);
 
+            if (!string.IsNullOrWhiteSpace(customerId) && customerId.Length != 5)
+            {
+                _logger.LogWarning("Invalid customer id {CustomerId}", customerId);
+
+                return null;
+            }
+
             var customer = await _repository.GetCustomerByIdAsync(customerId, cancellationToken);
 
             if (customer is null)
