@@ -17,6 +17,7 @@ The solution demonstrates a layered architecture with separation of concerns, ca
 
 * .NET 8
 * ASP.NET Core Web API
+* Razor Pages
 * Dapper
 * SQL Server LocalDB
 * Swagger / OpenAPI
@@ -39,6 +40,10 @@ Application layer containing business services, DTOs, interfaces, and shared mod
 ### Northwind.Infrastructure
 
 Infrastructure layer containing repositories, database access, and SQL queries.
+
+### Northwind.Web
+
+Minimal Razor Pages front-end consuming the API over HTTP via `HttpClient`.
 
 ### Northwind.Tests
 
@@ -82,27 +87,6 @@ Example:
 GET /api/customers/ALFKI
 
 Returns customer information together with order history summary.
-
-## Running the Application
-
-### Prerequisites
-
-* .NET 8 SDK
-* SQL Server LocalDB
-* Northwind sample database
-
-## Database Setup
-
-1. Install SQL Server LocalDB
-2. Create database `Northwind`
-3. Execute scripts from `/scripts`
-
-### Run
-
-1. Restore NuGet packages
-2. Ensure the Northwind database exists in LocalDB
-3. Run the Northwind.Api project
-4. Open Swagger UI at `/swagger`
 
 ## Logging
 
@@ -182,15 +166,89 @@ The solution contains:
 * A dedicated application layer was introduced to separate business logic from infrastructure concerns.
 * Swagger is enabled for easy API exploration and testing.
 
+## Running the Application
+
+### Prerequisites
+
+* .NET 8 SDK
+* SQL Server LocalDB
+* Northwind sample database
+
+## Database Setup
+
+1. Install SQL Server LocalDB
+2. Create database `Northwind`
+3. Execute scripts from `/scripts`
+
+### Run
+
+1. Restore NuGet packages
+2. Ensure the Northwind database exists in LocalDB
+3. Configure the API base address in `Northwind.Web`
+4. Start both `Northwind.Api` and `Northwind.Web`
+5. Open:
+
+   * Swagger UI at `/swagger`
+   * Razor UI at `/Customers`
+
+### Multiple Startup Projects (Visual Studio)
+
+To run the complete solution:
+
+1. Right-click the solution
+2. Select **Set Startup Projects**
+3. Choose **Multiple startup projects**
+4. Set both:
+
+   * `Northwind.Api` → Start
+   * `Northwind.Web` → Start
+	
+## Front-End
+
+A lightweight Razor Pages front-end was added to provide a simple end-to-end user experience and demonstrate HTTP-based integration with the API.
+
+The front-end communicates exclusively with the Web API using `HttpClient` and does not access the database directly.
+
+Implemented pages:
+
+### Customers
+
+Route:
+
+`/Customers`
+
+Displays:
+
+* Customer ID
+* Company name
+* Order count
+* Pagination information
+
+Customer names link to the details page.
+
+### Customer Details
+
+Route:
+
+`/Customer/{id}`
+
+Displays:
+
+* Customer information
+* Contact name
+* Country
+* Order history
+* Order totals
+* Product counts
+
+The application root (`/`) redirects to `/Customers`.
+
 ## Future Improvements
 
 * Distributed caching with Redis
-* OpenTelemetry tracing exporters
 * Integration test database isolation
 * API versioning
-* Additional validation and request validation
 * Containerization with Docker
-* Front-end client application
 
 ## AI Assistance
 
